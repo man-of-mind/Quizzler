@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'QuizBrain.dart';
+
 void main() {
   runApp(Quiz());
 }
@@ -11,11 +13,7 @@ class Quiz extends StatefulWidget {
 
 class _QuizState extends State<Quiz> {
   List<Icon> scoreKeeper = [];
-  List<String> questions = [
-    'Node.js is a programming language.',
-    'Flutter is cross-platform.',
-    'A full-stack developer knows both frontend and backend engineering.'
-  ];
+  QuizBrain quizBrain = QuizBrain();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -33,11 +31,12 @@ class _QuizState extends State<Quiz> {
             children: [
               Expanded(
                 flex: 5,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Center(
                     child: Text(
-                      questions.last,
+                      quizBrain.getQuestion(),
+                      textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white, fontSize: 25),
                     ),
                   ),
@@ -45,9 +44,9 @@ class _QuizState extends State<Quiz> {
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(15.0),
                   child: FlatButton(
-                    padding: const EdgeInsets.all(15.0),
+                    //                padding: const EdgeInsets.all(15.0),
                     color: Colors.green,
                     textColor: Colors.white,
                     child: Text(
@@ -56,12 +55,21 @@ class _QuizState extends State<Quiz> {
                     ),
                     onPressed: () {
                       setState(() {
-                        scoreKeeper.add(
-                          Icon(
-                            Icons.check,
-                            color: Colors.green,
-                          ),
-                        );
+                        bool correctAnswer = quizBrain.getAnswer();
+                        if (correctAnswer == true) {
+                          scoreKeeper.add(
+                            Icon(
+                              Icons.check,
+                              color: Colors.green,
+                            ),
+                          );
+                        } else {
+                          scoreKeeper.add(Icon(
+                            Icons.close,
+                            color: Colors.red,
+                          ));
+                        }
+                        quizBrain.nextQuestion();
                       });
                     },
                   ),
@@ -69,16 +77,34 @@ class _QuizState extends State<Quiz> {
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(15.0),
                   child: FlatButton(
-                    padding: const EdgeInsets.all(15.0),
+                    //                 padding: const EdgeInsets.all(15.0),
                     color: Colors.red,
                     textColor: Colors.white,
                     child: Text(
                       'False',
                       style: TextStyle(fontSize: 20),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      setState(() {
+                        bool correctAnswer = quizBrain.getAnswer();
+                        if (correctAnswer == false) {
+                          scoreKeeper.add(
+                            Icon(
+                              Icons.check,
+                              color: Colors.green,
+                            ),
+                          );
+                        } else {
+                          scoreKeeper.add(Icon(
+                            Icons.close,
+                            color: Colors.red,
+                          ));
+                        }
+                        quizBrain.nextQuestion();
+                      });
+                    },
                   ),
                 ),
               ),
