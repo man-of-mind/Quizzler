@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 import 'QuizBrain.dart';
 
@@ -13,6 +14,64 @@ class Quiz extends StatefulWidget {
 
 class _QuizState extends State<Quiz> {
   List<Icon> scoreKeeper = [];
+
+  void checkAnswer(bool userAnswer) {
+    bool correctAnswer = quizBrain.getAnswer();
+    setState(() {
+      if (correctAnswer == userAnswer) {
+        scoreKeeper.add(
+          Icon(
+            Icons.check,
+            color: Colors.green,
+          ),
+        );
+        if (quizBrain.isFinished()) {
+          Alert(
+            context: context,
+            title: "Finished",
+            desc: "You have reach the end of the questions.",
+            buttons: [
+              DialogButton(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(fontSize: 20, color: Colors.blue),
+                  ),
+                  onPressed: () {
+                    quizBrain.resetQuestion();
+                  }),
+            ],
+          ).show();
+        } else {
+          quizBrain.nextQuestion();
+        }
+      } else {
+        scoreKeeper.add(Icon(
+          Icons.close,
+          color: Colors.red,
+        ));
+        if (quizBrain.isFinished()) {
+          Alert(
+            context: context,
+            title: "Finished",
+            desc: "You have reach the end of the questions.",
+            buttons: [
+              DialogButton(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(fontSize: 20, color: Colors.blue),
+                  ),
+                  onPressed: () {
+                    quizBrain.resetQuestion();
+                  }),
+            ],
+          ).show();
+        } else {
+          quizBrain.nextQuestion();
+        }
+      }
+    });
+  }
+
   QuizBrain quizBrain = QuizBrain();
   @override
   Widget build(BuildContext context) {
@@ -54,23 +113,7 @@ class _QuizState extends State<Quiz> {
                       style: TextStyle(fontSize: 20),
                     ),
                     onPressed: () {
-                      setState(() {
-                        bool correctAnswer = quizBrain.getAnswer();
-                        if (correctAnswer == true) {
-                          scoreKeeper.add(
-                            Icon(
-                              Icons.check,
-                              color: Colors.green,
-                            ),
-                          );
-                        } else {
-                          scoreKeeper.add(Icon(
-                            Icons.close,
-                            color: Colors.red,
-                          ));
-                        }
-                        quizBrain.nextQuestion();
-                      });
+                      checkAnswer(true);
                     },
                   ),
                 ),
@@ -87,23 +130,7 @@ class _QuizState extends State<Quiz> {
                       style: TextStyle(fontSize: 20),
                     ),
                     onPressed: () {
-                      setState(() {
-                        bool correctAnswer = quizBrain.getAnswer();
-                        if (correctAnswer == false) {
-                          scoreKeeper.add(
-                            Icon(
-                              Icons.check,
-                              color: Colors.green,
-                            ),
-                          );
-                        } else {
-                          scoreKeeper.add(Icon(
-                            Icons.close,
-                            color: Colors.red,
-                          ));
-                        }
-                        quizBrain.nextQuestion();
-                      });
+                      checkAnswer(false);
                     },
                   ),
                 ),
