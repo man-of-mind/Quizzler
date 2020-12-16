@@ -24,7 +24,11 @@ class QuizBrain {
   }
 
   bool isFinished() {
-    return _questionNumber == (_questionBank.length - 1);
+    if (_questionNumber >= (_questionBank.length - 1)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   void resetQuestion() {
@@ -37,9 +41,5 @@ class QuizBrain {
 
   bool getAnswer() {
     return _questionBank[_questionNumber].questionAnswer;
-  }
-
-  int getSize() {
-    return _questionBank.length;
   }
 }
